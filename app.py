@@ -1,5 +1,6 @@
 import uuid
 from flask import Flask, request
+from flask_smorest import abort
 from db import comments, reactions, images
 
 app = Flask(__name__)
@@ -15,7 +16,7 @@ def get_image_by_id(image_id):
     try:
         return images[image_id]
     except KeyError:
-        return {"message": "store not found"}, 404
+        abort(404, message="image not found")
 
 
 @app.post("/image")
@@ -25,6 +26,27 @@ def create_image():
     newImage = {**request_data, id: image_id}
     images[image_id] = newImage
     return newImage, 201
+
+
+@app.delete("/images/<string:image_id")
+def delete_image(image_id):
+    try:
+        del images[image_id]
+    except KeyError:
+        abort(404, message="image not found")
+
+
+@app.put("/images/<string:image_id")
+def update_image(image_id):
+    image_data = request.get_json()
+    if "image_url" not in image_data:
+        abort(400, message="image_url not in update request")
+    try:
+        image = images[image_id]
+        image |= image_data
+        return image
+    except:
+        abort(404, message="image not found")
 
 
 @app.get("/comments/<string:image_id>")
