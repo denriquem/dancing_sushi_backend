@@ -1,5 +1,7 @@
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 
+db = SQLAlchemy()
 comments = {
     1: {
         "image_id": 9999,
