@@ -25,7 +25,9 @@ reactions = {
 
 images = {
     1: {
+        "id": 1,
         "user_id": 9292929292,
-        "image_url": 'Whaat test.com'
+        "image_url": 'Whaat test.com',
+        "image_title": 'The Thing!'
     }
 }
