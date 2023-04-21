@@ -1,7 +1,6 @@
 import uuid
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from db import images
 from schemas import ImageSchema, ImageUpdateSchema
 
 blp = Blueprint("images", " __name__", description="operations on images")

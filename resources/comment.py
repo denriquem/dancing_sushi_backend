@@ -1,6 +1,5 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint
-from db import comments
 
 blp = Blueprint("images", " __name__", description="operations on images")
 
