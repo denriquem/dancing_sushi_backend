@@ -9,37 +9,28 @@ from db import db
 blp = Blueprint('images', " __name__", description="operations on images")
 
 
-@blp.route('/image/<string:image_id>')
+@blp.route('/images/<string:image_id>')
 class Image(MethodView):
     @blp.response(200, ImageSchema)
     def get(self, image_id):
-        try:
-            return images[image_id]
-        except KeyError:
-            abort(404, message="image not found")
+        image = ImageModel.query.get_or_404(image_id)
+        return image
 
     def delete(self, image_id):
-        try:
-            del images[image_id]
-        except KeyError:
-            abort(404, message="image not found")
+        image = ImageModel.query.get_or_404(image_id)
+        raise NotImplementedError("Deleting an image is not implemented")
 
     @blp.arguments(ImageUpdateSchema)
     @blp.response(200, ImageSchema)
     def put(self, image_data, image_id):
-        if "image_url" not in image_data:
-            abort(400, message="image_url not in update request")
-        try:
-            image = images[image_id]
-            image |= image_data
-            return image
-        except:
-            abort(404, message="image not found")
+        image = ImageModel.query.get_or_404(image_id)
+        raise NotImplementedError("Updating an image is not implemented")
 
 
 @blp.route('/images')
 class Image(MethodView):
     def get(self):
+        print("helooo????")
         return {"test": 'bla'}
 
     @blp.arguments(ImageSchema)
@@ -47,6 +38,8 @@ class Image(MethodView):
     def post(self, request_data):
         image = ImageModel(**request_data)
         
+        print(image)
+
         try:
             db.session.add(image)
             db.session.commit()
