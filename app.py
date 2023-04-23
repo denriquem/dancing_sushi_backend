@@ -3,7 +3,6 @@ from flask import Flask
 from flask_smorest import Api
 from resources.image import blp as ImageBlueprint
 from db import db
-import models
 
 
 def createApp(db_url=None):

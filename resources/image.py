@@ -1,9 +1,12 @@
 import uuid
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+from sqlalchemy.exc import SQLAlchemyError
 from schemas import ImageSchema, ImageUpdateSchema
+from models import ImageModel
+from db import db
 
-blp = Blueprint("images", " __name__", description="operations on images")
+blp = Blueprint('images', " __name__", description="operations on images")
 
 
 @blp.route('/image/<string:image_id>')
@@ -37,12 +40,17 @@ class Image(MethodView):
 @blp.route('/images')
 class Image(MethodView):
     def get(self):
-        return images
+        return {"test": 'bla'}
 
     @blp.arguments(ImageSchema)
     @blp.response(200, ImageSchema)
     def post(self, request_data):
-        image_id = uuid.uuid4.hex()
-        newImage = {**request_data, id: image_id}
-        images[image_id] = newImage
-        return newImage, 201
+        image = ImageModel(**request_data)
+        
+        try:
+            db.session.add(image)
+            db.session.commit()
+        except SQLAlchemyError:
+            abort(500, message="An error occured while inserting the item")
+
+        return image, 201
