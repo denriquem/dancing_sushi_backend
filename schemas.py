@@ -10,3 +10,4 @@ class ImageSchema(Schema):
 
 class ImageUpdateSchema(Schema):
     image_title = fields.Str(required=True)
+    user_id = fields.Int()

@@ -1,4 +1,3 @@
-import uuid
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
@@ -18,26 +17,35 @@ class Image(MethodView):
 
     def delete(self, image_id):
         image = ImageModel.query.get_or_404(image_id)
-        raise NotImplementedError("Deleting an image is not implemented")
+        db.session.delete(image)
+        db.session.commit()
+        return {"message": "Image deleted"}
 
     @blp.arguments(ImageUpdateSchema)
     @blp.response(200, ImageSchema)
     def put(self, image_data, image_id):
-        image = ImageModel.query.get_or_404(image_id)
-        raise NotImplementedError("Updating an image is not implemented")
+        image = ImageModel.query.get(image_id)
+        if image:
+            image.image_url = image_data["image_url"]
+            image.image_title = image_data["image_title"]
+        else:
+            image = ImageModel(id=image_id, **image_data)
+        db.session.add(image)
+        db.session.commit()
+        return image
 
 
 @blp.route('/images')
 class Image(MethodView):
+    @blp.response(200, ImageSchema(many=True))
     def get(self):
-        print("helooo????")
-        return {"test": 'bla'}
+        return ImageModel.query.all()
 
     @blp.arguments(ImageSchema)
     @blp.response(200, ImageSchema)
     def post(self, request_data):
         image = ImageModel(**request_data)
-        
+
         print(image)
 
         try:
