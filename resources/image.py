@@ -8,7 +8,7 @@ from db import db
 blp = Blueprint('images', " __name__", description="operations on images")
 
 
-@blp.route('/images/<string:image_id>')
+@blp.route('/images/<int:image_id>')
 class Image(MethodView):
     @blp.response(200, ImageSchema)
     def get(self, image_id):

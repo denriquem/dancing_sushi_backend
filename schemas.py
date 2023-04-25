@@ -11,3 +11,10 @@ class ImageSchema(Schema):
 class ImageUpdateSchema(Schema):
     image_title = fields.Str(required=True)
     user_id = fields.Int()
+
+
+class UserSchema(Schema):
+    user_id = fields.Int(dump_only=True)
+    username = fields.Str(required=True)
+    user_email = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
