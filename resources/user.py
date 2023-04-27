@@ -4,6 +4,7 @@ from schemas import UserSchema
 from models import UserModel
 from db import db
 
+from flask_jwt_extended import create_access_token
 from passlib.hash import pbkdf2_sha256
 
 blp = Blueprint('users', " __name__", description="operations on users")
@@ -25,6 +26,21 @@ class UserRegister(MethodView):
         db.session.commit()
 
         return {"message": "User created succesfully"}, 201
+
+
+@blp.route("/login")
+class UserLogin(MethodView):
+    @blp.arguments(UserSchema)
+    def post(self, user_data):
+        user = UserModel.query.filter(
+            UserModel.username == user_data["username"]
+        ).first()
+
+        if user and pbkdf2_sha256.verify(user_data['password'], user.password):
+            access_token = create_access_token(identity=user.user_id)
+            return {"access_token": access_token}
+
+        abort(401, message="invalide credentials")
 
 
 @blp.route('/user/<int:user_id>')
